@@ -75,40 +75,76 @@
               <label><input type="radio" name="trip-type" value="One-way"><span>One-way</span></label>
             </div>
             <form class="flight-form" id="flight-form">
-              <label class="form-field">
+              <label class="form-field origin-field">
                 <span>From</span>
                 <select name="origin" aria-label="From">
                   <option value="Nairobi">Nairobi (NBO)</option>
                 </select>
               </label>
-              <button class="swap-button" type="button" aria-label="Swap departure and arrival" title="Nairobi fares are listed below">↔</button>
-              <label class="form-field">
+              <button class="swap-button" type="button" aria-label="Route swapping is unavailable for fares from Nairobi" title="Fares are listed from Nairobi" disabled>↔</button>
+              <label class="form-field destination-field">
                 <span>To</span>
                 <select name="destination" required aria-label="To">
                   <option value="">Choose destination</option>
-                  <option>Ukunda</option><option>Malindi</option><option>Lamu</option>
-                  <option>Kakamega</option><option>Migori</option><option>Kitale</option>
-                  <option>Kisumu</option><option>Eldoret</option><option>Lodwar</option>
-                  <option>Mombasa</option><option>Garissa</option>
+                  <option value="Ukunda" data-fare="7000">Ukunda</option>
+                  <option value="Malindi" data-fare="7000">Malindi</option>
+                  <option value="Lamu" data-fare="10000">Lamu</option>
+                  <option value="Kakamega" data-fare="7500">Kakamega</option>
+                  <option value="Migori" data-fare="6500">Migori</option>
+                  <option value="Kitale" data-fare="7000">Kitale</option>
+                  <option value="Kisumu" data-fare="6500">Kisumu</option>
+                  <option value="Eldoret" data-fare="7000">Eldoret</option>
+                  <option value="Lodwar" data-fare="10000">Lodwar</option>
+                  <option value="Mombasa" data-fare="7000">Mombasa</option>
+                  <option value="Garissa" data-fare="6000">Garissa</option>
                 </select>
               </label>
-              <label class="form-field">
+              <label class="form-field depart-field">
                 <span>Depart</span>
-                <input type="date" name="depart" aria-label="Depart date">
+                <input type="date" name="depart" aria-label="Depart date" required>
               </label>
               <label class="form-field return-field">
                 <span>Return</span>
                 <input type="date" name="return" aria-label="Return date">
               </label>
-              <label class="form-field">
+              <div class="form-field passenger-field">
                 <span>Passengers</span>
-                <select name="passengers" aria-label="Passengers">
-                  <option>1 passenger</option><option>2 passengers</option>
-                  <option>3 passengers</option><option>4 passengers</option>
-                  <option>5 passengers</option><option>6 passengers</option>
-                </select>
-              </label>
-              <label class="form-field">
+                <button class="passenger-toggle" id="passenger-toggle" type="button" aria-expanded="false" aria-controls="passenger-menu">
+                  <span id="passenger-summary">1 Adult, 0 Infant, 0 Children</span>
+                  <span aria-hidden="true">⌄</span>
+                </button>
+                <input type="hidden" name="passengers" id="passenger-value" value="1 adult, 0 infants, 0 children">
+                <div class="passenger-menu" id="passenger-menu" role="group" aria-label="Passenger counts" hidden>
+                  <strong>Passengers</strong>
+                  <div class="passenger-row">
+                    <span>Adults</span>
+                    <div class="passenger-counter">
+                      <button type="button" data-passenger-type="adults" data-change="-1" aria-label="Remove adult">−</button>
+                      <output id="adult-count" aria-live="polite">1</output>
+                      <button type="button" data-passenger-type="adults" data-change="1" aria-label="Add adult">+</button>
+                    </div>
+                  </div>
+                  <div class="passenger-row">
+                    <span>Children <small>2–11 years</small></span>
+                    <div class="passenger-counter">
+                      <button type="button" data-passenger-type="children" data-change="-1" aria-label="Remove child">−</button>
+                      <output id="child-count" aria-live="polite">0</output>
+                      <button type="button" data-passenger-type="children" data-change="1" aria-label="Add child">+</button>
+                    </div>
+                  </div>
+                  <div class="passenger-row">
+                    <span>Infants <small>Under 2 years</small></span>
+                    <div class="passenger-counter">
+                      <button type="button" data-passenger-type="infants" data-change="-1" aria-label="Remove infant">−</button>
+                      <output id="infant-count" aria-live="polite">0</output>
+                      <button type="button" data-passenger-type="infants" data-change="1" aria-label="Add infant">+</button>
+                    </div>
+                  </div>
+                  <label class="flexible-dates"><input type="checkbox" name="flexible"> My travel dates are flexible</label>
+                  <button class="passenger-accept" type="button">Accept</button>
+                </div>
+              </div>
+              <label class="form-field coupon-field">
                 <span>Coupon code</span>
                 <input type="text" name="coupon" placeholder="Optional" aria-label="Coupon code">
               </label>
@@ -116,24 +152,64 @@
                 <span>Currency</span>
                 <select name="currency" aria-label="Currency"><option>KES — Kenyan Shilling</option><option>USD — US Dollar</option></select>
               </label>
-              <button class="find-flights" type="submit">SEND BOOKING ENQUIRY <span aria-hidden="true">→</span></button>
+              <button class="find-flights" type="submit">FIND FLIGHTS <span aria-hidden="true">→</span></button>
             </form>
-            <p class="booking-hint">Your request opens WhatsApp so our team can confirm availability and fares.</p>
+            <p class="booking-hint">Choose your flight, then send an enquiry. Our team confirms schedules and availability on WhatsApp.</p>
           </div>
 
           <div class="booking-content alternate-panel" id="panel-booking" role="tabpanel" aria-labelledby="tab-booking" hidden>
-            <div><p class="panel-eyebrow">NEED A HAND?</p><h2>Questions about a booking?</h2><p>Our team can help with your reservation and travel enquiries.</p></div>
-            <a class="panel-action" href="tel:+254755528986">Call 0755 528 986 <span aria-hidden="true">↗</span></a>
-            <a class="panel-action panel-action-whatsapp" href="https://wa.me/254785195669?text=Hey%20there!%20I%20need%20help%20with%20an%20existing%20booking.%20Could%20you%20assist%3F" target="_blank" rel="noopener noreferrer">WhatsApp us <span aria-hidden="true">↗</span></a>
+            <div><p class="panel-eyebrow">MANAGE YOUR TRIP</p><h2>Need help with a booking?</h2><p>Share your booking reference and surname so our team can assist.</p></div>
+            <form class="secondary-form" id="existing-booking-form">
+              <label>Booking reference<input name="reference" type="text" placeholder="e.g. ABC123" required></label>
+              <label>Passenger surname<input name="surname" type="text" placeholder="Surname" required></label>
+              <button class="panel-action panel-action-whatsapp" type="submit">REQUEST HELP <span aria-hidden="true">↗</span></button>
+            </form>
           </div>
 
           <div class="booking-content alternate-panel" id="panel-status" role="tabpanel" aria-labelledby="tab-status" hidden>
-            <div><p class="panel-eyebrow">FLIGHT ENQUIRIES</p><h2>Checking on a flight?</h2><p>Contact our team for the latest flight information.</p></div>
-            <a class="panel-action" href="tel:+254755528986">Call 0755 528 986 <span aria-hidden="true">↗</span></a>
-            <a class="panel-action panel-action-whatsapp" href="https://wa.me/254785195669?text=Hey%20there!%20I%20have%20a%20question%20about%20a%20flight.%20Could%20you%20share%20the%20latest%20status%3F" target="_blank" rel="noopener noreferrer">Ask on WhatsApp <span aria-hidden="true">↗</span></a>
+            <div><p class="panel-eyebrow">FLIGHT ENQUIRIES</p><h2>Checking on a flight?</h2><p>Send the flight details to our team for the latest status.</p></div>
+            <form class="secondary-form" id="flight-status-form">
+              <label>Flight number<input name="flightNumber" type="text" placeholder="e.g. OW 101" required></label>
+              <label>Departure date<input name="departureDate" type="date" required></label>
+              <button class="panel-action panel-action-whatsapp" type="submit">CHECK STATUS <span aria-hidden="true">↗</span></button>
+            </form>
           </div>
         </div>
       </section>
+
+      <dialog class="booking-dialog" id="booking-dialog" aria-labelledby="dialog-title">
+        <button class="dialog-close" type="button" aria-label="Close booking enquiry">×</button>
+        <p class="dialog-eyebrow">FLIGHT ENQUIRY</p>
+        <h2 id="dialog-title">Choose your flight</h2>
+        <section id="search-results-step">
+          <p class="dialog-summary" id="search-summary"></p>
+          <article class="flight-option">
+            <div class="flight-option-details">
+              <div><strong>Skyward Airlines</strong><span>Flight schedule confirmed by our team</span></div>
+              <div class="flight-option-fare"><strong id="estimated-fare"></strong><span id="fare-label">Indicative fare</span></div>
+            </div>
+            <button class="flight-book-button" id="choose-flight" type="button">BOOK NOW <span aria-hidden="true">→</span></button>
+          </article>
+          <p class="dialog-note" id="fare-note">Fares are indicative, based on the published Nairobi fares. Schedules, availability, and final prices are confirmed on WhatsApp.</p>
+        </section>
+        <section id="booking-details-step" hidden>
+          <button class="back-to-results" id="back-to-results" type="button">← Back to flight choices</button>
+          <p class="dialog-summary" id="selected-flight-summary"></p>
+          <form class="booking-details-form" id="booking-enquiry-form">
+            <label>Full name<input name="fullName" type="text" autocomplete="name" required></label>
+            <label>Phone or WhatsApp number<input name="phone" type="tel" autocomplete="tel" required></label>
+            <label>Email address<input name="email" type="email" autocomplete="email" required></label>
+            <label>Lead passenger type
+              <select name="passengerType" required>
+                <option>Adult</option><option>Child</option><option>Infant</option>
+              </select>
+            </label>
+            <label class="special-request-field">Special request<textarea name="specialRequest" placeholder="Optional request" rows="3"></textarea></label>
+            <button class="find-flights details-submit" type="submit">CONFIRM DETAILS <span aria-hidden="true">→</span></button>
+            <p class="dialog-note details-note">This sends a prefilled enquiry to WhatsApp; your booking is not confirmed until our team replies.</p>
+          </form>
+        </section>
+      </dialog>
 
       <section class="content-section specials-section" id="specials">
         <div class="section-title">

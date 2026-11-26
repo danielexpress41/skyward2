@@ -1,3 +1,3 @@
-# skyward2
+# Skyward Airlines
 
-Skyward Airlines fares and booking enquiry website.
+A responsive fares and booking-enquiry website. Flight searches show indicative fares from Nairobi; schedules and availability are confirmed by the Skyward team through WhatsApp.
