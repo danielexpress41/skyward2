@@ -117,7 +117,7 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
 
   const tripType = form.get("trip-type") || document.querySelector('input[name="trip-type"]:checked').value;
   const message = [
-    "Hello Skyward Airlines, I would like to enquire about a flight.",
+    "Hey there! I'd like to enquire about a flight.",
     `Route: Nairobi to ${destination}`,
     `Trip: ${tripType}`,
     form.get("depart") ? `Depart: ${form.get("depart")}` : "",
