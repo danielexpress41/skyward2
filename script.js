@@ -222,6 +222,40 @@ const formatFare = (fare) => new Intl.NumberFormat("en-KE").format(fare);
 const passengerDescription = (counts) =>
   `${counts.adults} adult${counts.adults === 1 ? "" : "s"}, ${counts.children} child${counts.children === 1 ? "" : "ren"}, ${counts.infants} infant${counts.infants === 1 ? "" : "s"}`;
 
+const flightForm = document.querySelector("#flight-form");
+const originSelect = flightForm.elements.origin;
+const destinationSelect = flightForm.elements.destination;
+const swapButton = flightForm.querySelector(".swap-button");
+const destinationsFromNairobi = [...destinationSelect.options].filter((option) => option.value);
+
+const updateDestinations = (selectedDestination = "") => {
+  destinationSelect.replaceChildren(new Option("Choose destination", ""));
+  const destinations = originSelect.value === "Nairobi"
+    ? destinationsFromNairobi
+    : [new Option("Nairobi (NBO)", "Nairobi")];
+
+  if (originSelect.value !== "Nairobi") {
+    destinations[0].dataset.fare = originSelect.selectedOptions[0].dataset.fare;
+  }
+
+  destinations.forEach((option) => destinationSelect.append(option.cloneNode(true)));
+  destinationSelect.value = selectedDestination;
+  swapButton.disabled = !destinationSelect.value;
+};
+
+originSelect.addEventListener("change", () => updateDestinations());
+destinationSelect.addEventListener("change", () => {
+  swapButton.disabled = !destinationSelect.value;
+});
+swapButton.addEventListener("click", () => {
+  const previousOrigin = originSelect.value;
+  const nextOrigin = destinationSelect.value;
+  if (!nextOrigin) return;
+
+  originSelect.value = nextOrigin;
+  updateDestinations(previousOrigin);
+});
+
 const closeBookingDialog = () => {
   bookingDialog.close();
 };
@@ -234,7 +268,7 @@ bookingDialog.addEventListener("close", () => {
   if (lastBookingFocus && document.contains(lastBookingFocus)) lastBookingFocus.focus();
 });
 
-document.querySelector("#flight-form").addEventListener("submit", (event) => {
+flightForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const form = new FormData(event.currentTarget);
   const destinationOption = event.currentTarget.elements.destination.selectedOptions[0];

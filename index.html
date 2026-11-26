@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=8a070a8">
-    <script src="script.js?v=8a070a8" defer></script>
+    <link rel="stylesheet" href="styles.css?v=origin-dropdown-20261126">
+    <script src="script.js?v=origin-dropdown-20261126" defer></script>
   </head>
   <body id="top">
     <div class="topline">
@@ -79,9 +79,20 @@
                 <span>From</span>
                 <select name="origin" aria-label="From">
                   <option value="Nairobi">Nairobi (NBO)</option>
+                  <option value="Ukunda" data-fare="7000">Ukunda</option>
+                  <option value="Malindi" data-fare="7000">Malindi</option>
+                  <option value="Lamu" data-fare="10000">Lamu</option>
+                  <option value="Kakamega" data-fare="7500">Kakamega</option>
+                  <option value="Migori" data-fare="6500">Migori</option>
+                  <option value="Kitale" data-fare="7000">Kitale</option>
+                  <option value="Kisumu" data-fare="6500">Kisumu</option>
+                  <option value="Eldoret" data-fare="7000">Eldoret</option>
+                  <option value="Lodwar" data-fare="10000">Lodwar</option>
+                  <option value="Mombasa" data-fare="7000">Mombasa</option>
+                  <option value="Garissa" data-fare="6000">Garissa</option>
                 </select>
               </label>
-              <button class="swap-button" type="button" aria-label="Route swapping is unavailable for fares from Nairobi" title="Fares are listed from Nairobi" disabled>↔</button>
+              <button class="swap-button" type="button" aria-label="Swap origin and destination" title="Switch between the listed route directions" disabled>↔</button>
               <label class="form-field destination-field">
                 <span>To</span>
                 <select name="destination" required aria-label="To">
@@ -154,7 +165,7 @@
               </label>
               <button class="find-flights" type="submit">FIND FLIGHTS <span aria-hidden="true">→</span></button>
             </form>
-            <p class="booking-hint">Choose your flight, then send an enquiry. Our team confirms schedules and availability on WhatsApp.</p>
+            <p class="booking-hint">Choose a route to or from Nairobi. The listed fare applies in either direction; our team confirms schedules and availability on WhatsApp.</p>
           </div>
 
           <div class="booking-content alternate-panel" id="panel-booking" role="tabpanel" aria-labelledby="tab-booking" hidden>
