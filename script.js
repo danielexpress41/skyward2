@@ -232,13 +232,14 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
   const destination = destinationOption.value;
   const baseFare = Number(destinationOption.dataset.fare);
   const returnTrip = tripType === "Roundtrip";
+  const passengerTotal = passengerCounts.adults + passengerCounts.children + passengerCounts.infants;
   const flexible = flexibleDates.checked;
   const dateDescription = [
     form.get("depart") ? `departing ${form.get("depart")}` : "",
     returnTrip && form.get("return") ? `returning ${form.get("return")}` : "",
     flexible ? "dates are flexible" : ""
   ].filter(Boolean).join(" and ");
-  const fare = baseFare * (returnTrip ? 2 : 1);
+  const fare = baseFare * (returnTrip ? 2 : 1) * passengerTotal;
 
   currentSearch = {
     origin: form.get("origin"),
@@ -247,6 +248,7 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
     depart: form.get("depart"),
     returnDate: returnTrip ? form.get("return") : "",
     passengers: passengerValue.value,
+    passengerTotal,
     coupon: form.get("coupon"),
     currency: form.get("currency"),
     flexible
@@ -254,10 +256,10 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
 
   searchSummary.textContent = `${tripType}: ${currentSearch.origin} to ${destination} for ${currentSearch.passengers}${dateDescription ? `, ${dateDescription}` : ""}.`;
   estimatedFare.textContent = `From KSh ${formatFare(fare)}`;
-  fareLabel.textContent = returnTrip ? "Indicative roundtrip fare" : "Indicative one-way fare";
+  fareLabel.textContent = `Indicative ${returnTrip ? "roundtrip" : "one-way"} fare for ${passengerTotal} passenger${passengerTotal === 1 ? "" : "s"}`;
   document.querySelector("#fare-note").textContent = currentSearch.currency.startsWith("USD")
-    ? "Indicative fare is shown in KSh from the published Nairobi fares. Our team will confirm the final fare, currency, schedule, and availability on WhatsApp."
-    : "Indicative fare is based on the published Nairobi fares. Our team will confirm the final fare, schedule, and availability on WhatsApp.";
+    ? "Estimate uses the published KSh fare per passenger and trip leg. Our team will confirm the final fare, currency, any child or infant pricing, schedule, and availability on WhatsApp."
+    : "Estimate uses the published fare per passenger and trip leg. Our team will confirm the final fare, any child or infant pricing, schedule, and availability on WhatsApp.";
   dialogTitle.textContent = "Choose your flight";
   searchResultsStep.hidden = false;
   bookingDetailsStep.hidden = true;
