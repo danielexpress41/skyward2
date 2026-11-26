@@ -201,16 +201,26 @@ document.querySelectorAll(".scroll-button").forEach((button) => {
 const bookingDialog = document.querySelector("#booking-dialog");
 const searchResultsStep = document.querySelector("#search-results-step");
 const bookingDetailsStep = document.querySelector("#booking-details-step");
+const seatSelectionStep = document.querySelector("#seat-selection-step");
 const dialogTitle = document.querySelector("#dialog-title");
 const searchSummary = document.querySelector("#search-summary");
 const selectedFlightSummary = document.querySelector("#selected-flight-summary");
-const estimatedFare = document.querySelector("#estimated-fare");
-const fareLabel = document.querySelector("#fare-label");
+const seatGrid = document.querySelector("#seat-grid");
+const seatMessage = document.querySelector("#seat-message");
+const seatStepCopy = document.querySelector("#seat-step-copy");
+const whatsappConfirmButton = document.querySelector("#send-booking-enquiry");
+const bookingEnquiryForm = document.querySelector("#booking-enquiry-form");
+const flightOptions = [...document.querySelectorAll(".flight-option")];
 const flexibleDates = document.querySelector('input[name="flexible"]');
 let currentSearch;
+let currentFlight;
+let passengerDetails;
+let selectedSeats = [];
 let lastBookingFocus;
 
 const formatFare = (fare) => new Intl.NumberFormat("en-KE").format(fare);
+const passengerDescription = (counts) =>
+  `${counts.adults} adult${counts.adults === 1 ? "" : "s"}, ${counts.children} child${counts.children === 1 ? "" : "ren"}, ${counts.infants} infant${counts.infants === 1 ? "" : "s"}`;
 
 const closeBookingDialog = () => {
   bookingDialog.close();
@@ -233,13 +243,13 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
   const baseFare = Number(destinationOption.dataset.fare);
   const returnTrip = tripType === "Roundtrip";
   const passengerTotal = passengerCounts.adults + passengerCounts.children + passengerCounts.infants;
+  const journeyCount = returnTrip ? 2 : 1;
   const flexible = flexibleDates.checked;
   const dateDescription = [
     form.get("depart") ? `departing ${form.get("depart")}` : "",
     returnTrip && form.get("return") ? `returning ${form.get("return")}` : "",
     flexible ? "dates are flexible" : ""
   ].filter(Boolean).join(" and ");
-  const fare = baseFare * (returnTrip ? 2 : 1) * passengerTotal;
 
   currentSearch = {
     origin: form.get("origin"),
@@ -247,64 +257,162 @@ document.querySelector("#flight-form").addEventListener("submit", (event) => {
     tripType,
     depart: form.get("depart"),
     returnDate: returnTrip ? form.get("return") : "",
-    passengers: passengerValue.value,
+    passengers: passengerDescription(passengerCounts),
     passengerTotal,
+    journeyCount,
     coupon: form.get("coupon"),
     currency: form.get("currency"),
     flexible
   };
 
   searchSummary.textContent = `${tripType}: ${currentSearch.origin} to ${destination} for ${currentSearch.passengers}${dateDescription ? `, ${dateDescription}` : ""}.`;
-  estimatedFare.textContent = `From KSh ${formatFare(fare)}`;
-  fareLabel.textContent = `Indicative ${returnTrip ? "roundtrip" : "one-way"} fare for ${passengerTotal} passenger${passengerTotal === 1 ? "" : "s"}`;
+  flightOptions.forEach((option, index) => {
+    const farePerJourney = baseFare + index * 1500;
+    const totalFare = farePerJourney * journeyCount * passengerTotal;
+    option.dataset.farePerJourney = String(farePerJourney);
+    option.querySelector(".flight-option-fare strong").textContent = `From KSh ${formatFare(totalFare)}`;
+    option.querySelector(".flight-option-fare span").textContent = `${returnTrip ? "Indicative roundtrip" : "Indicative one-way"} fare`;
+  });
   document.querySelector("#fare-note").textContent = currentSearch.currency.startsWith("USD")
     ? "Estimate uses the published KSh fare per passenger and trip leg. Our team will confirm the final fare, currency, any child or infant pricing, schedule, and availability on WhatsApp."
     : "Estimate uses the published fare per passenger and trip leg. Our team will confirm the final fare, any child or infant pricing, schedule, and availability on WhatsApp.";
   dialogTitle.textContent = "Choose your flight";
   searchResultsStep.hidden = false;
   bookingDetailsStep.hidden = true;
+  seatSelectionStep.hidden = true;
+  bookingEnquiryForm.reset();
+  currentFlight = undefined;
+  passengerDetails = undefined;
+  selectedSeats = [];
+  seatGrid.querySelectorAll(".seat-button").forEach((seat) => {
+    seat.classList.remove("is-selected");
+    seat.setAttribute("aria-pressed", "false");
+  });
+  whatsappConfirmButton.hidden = true;
+  seatMessage.textContent = "";
   lastBookingFocus = document.activeElement;
   bookingDialog.showModal();
   document.querySelector(".dialog-close").focus();
 });
 
-document.querySelector("#choose-flight").addEventListener("click", () => {
-  searchResultsStep.hidden = true;
-  bookingDetailsStep.hidden = false;
-  dialogTitle.textContent = "Complete your booking enquiry";
-  selectedFlightSummary.textContent = `${currentSearch.tripType}: ${currentSearch.origin} to ${currentSearch.destination} for ${currentSearch.passengers}${currentSearch.depart ? `, departing ${currentSearch.depart}` : ""}${currentSearch.returnDate ? ` and returning ${currentSearch.returnDate}` : ""}. Selected fare: ${estimatedFare.textContent}.`;
-  document.querySelector('input[name="fullName"]').focus();
+document.querySelectorAll(".flight-book-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const option = button.closest(".flight-option");
+    const optionIndex = Number(option.dataset.optionIndex);
+    const farePerJourney = Number(option.dataset.farePerJourney);
+    currentFlight = {
+      label: optionIndex === 0 ? "Lowest fare" : "Alternative fare",
+      farePerJourney,
+      totalFare: farePerJourney * currentSearch.journeyCount * currentSearch.passengerTotal
+    };
+    selectedSeats = [];
+    seatGrid.querySelectorAll(".seat-button").forEach((seat) => {
+      seat.classList.remove("is-selected");
+      seat.setAttribute("aria-pressed", "false");
+    });
+    whatsappConfirmButton.hidden = true;
+    seatMessage.textContent = "";
+    searchResultsStep.hidden = true;
+    bookingDetailsStep.hidden = false;
+    seatSelectionStep.hidden = true;
+    dialogTitle.textContent = "Complete your booking enquiry";
+    selectedFlightSummary.textContent = `${currentFlight.label}: ${currentSearch.tripType}, ${currentSearch.origin} to ${currentSearch.destination} for ${currentSearch.passengers}. Indicative total: KSh ${formatFare(currentFlight.totalFare)}.`;
+    document.querySelector('input[name="fullName"]').focus();
+  });
 });
 
 document.querySelector("#back-to-results").addEventListener("click", () => {
   bookingDetailsStep.hidden = true;
   searchResultsStep.hidden = false;
   dialogTitle.textContent = "Choose your flight";
-  document.querySelector("#choose-flight").focus();
+  document.querySelector(".flight-book-button").focus();
 });
 
-document.querySelector("#booking-enquiry-form").addEventListener("submit", (event) => {
+bookingEnquiryForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const details = new FormData(event.currentTarget);
+  passengerDetails = Object.fromEntries(new FormData(event.currentTarget));
+  bookingDetailsStep.hidden = true;
+  seatSelectionStep.hidden = false;
+  dialogTitle.textContent = "Choose your seat";
+  seatStepCopy.textContent = `Select ${currentSearch.passengerTotal} preferred seat${currentSearch.passengerTotal === 1 ? "" : "s"}. Seat availability is confirmed by our team on WhatsApp.`;
+  seatMessage.textContent = `Choose ${currentSearch.passengerTotal} seat preference${currentSearch.passengerTotal === 1 ? "" : "s"} to continue.`;
+  seatGrid.querySelector(".seat-button").focus();
+});
+
+document.querySelector("#back-to-details").addEventListener("click", () => {
+  seatSelectionStep.hidden = true;
+  bookingDetailsStep.hidden = false;
+  dialogTitle.textContent = "Complete your booking enquiry";
+  document.querySelector('input[name="fullName"]').focus();
+});
+
+for (let row = 1; row <= 8; row += 1) {
+  for (const column of ["A", "B", "C", "D"]) {
+    const seat = document.createElement("button");
+    seat.type = "button";
+    seat.className = "seat-button";
+    seat.textContent = `${row}${column}`;
+    seat.dataset.seat = `${row}${column}`;
+    seat.setAttribute("aria-pressed", "false");
+    seat.setAttribute("aria-label", `Choose seat ${row}${column}`);
+    seatGrid.append(seat);
+  }
+}
+
+seatGrid.addEventListener("click", (event) => {
+  const seat = event.target.closest(".seat-button");
+  if (!seat) return;
+  const seatCode = seat.dataset.seat;
+  const selectedIndex = selectedSeats.indexOf(seatCode);
+  if (selectedIndex >= 0) {
+    selectedSeats.splice(selectedIndex, 1);
+    seat.classList.remove("is-selected");
+    seat.setAttribute("aria-pressed", "false");
+  } else if (selectedSeats.length < currentSearch.passengerTotal) {
+    selectedSeats.push(seatCode);
+    seat.classList.add("is-selected");
+    seat.setAttribute("aria-pressed", "true");
+  } else {
+    seatMessage.textContent = `You have selected ${currentSearch.passengerTotal} seat preferences. Remove one before choosing another.`;
+    return;
+  }
+
+  if (selectedSeats.length < currentSearch.passengerTotal) {
+    const remaining = currentSearch.passengerTotal - selectedSeats.length;
+    seatMessage.textContent = `Select ${remaining} more seat preference${remaining === 1 ? "" : "s"}.`;
+    whatsappConfirmButton.hidden = true;
+    return;
+  }
+
+  const details = passengerDetails;
+  const totalFare = currentFlight.farePerJourney * currentSearch.journeyCount * currentSearch.passengerTotal;
   const message = [
-    "Hey there! I'd like to enquire about booking a flight.",
+    "Hey there! I'd like to enquire about confirming a flight booking.",
     `Route: ${currentSearch.origin} to ${currentSearch.destination}`,
     `Trip: ${currentSearch.tripType}`,
     currentSearch.depart ? `Depart: ${currentSearch.depart}` : "",
     currentSearch.returnDate ? `Return: ${currentSearch.returnDate}` : "",
     `Passengers: ${currentSearch.passengers}`,
-    `Lead passenger type: ${details.get("passengerType")}`,
+    `Fare option: ${currentFlight.label}`,
+    `Fare per passenger per journey: KSh ${formatFare(currentFlight.farePerJourney)}`,
+    `Journeys: ${currentSearch.journeyCount}`,
+    `Indicative total fare: KSh ${formatFare(totalFare)}`,
+    `Preferred seats (subject to confirmation): ${selectedSeats.join(", ")}`,
     currentSearch.flexible ? "Dates are flexible" : "",
-    `Indicative fare: ${estimatedFare.textContent}`,
     currentSearch.coupon ? `Coupon: ${currentSearch.coupon}` : "",
     `Currency preference: ${currentSearch.currency}`,
-    `Name: ${details.get("fullName")}`,
-    `Phone: ${details.get("phone")}`,
-    `Email: ${details.get("email")}`,
-    details.get("specialRequest") ? `Special request: ${details.get("specialRequest")}` : ""
+    `Name: ${details.fullName}`,
+    `ID/Passport: ${details.idNumber}`,
+    `Passenger type: ${details.passengerType}`,
+    `Phone: ${details.phone}`,
+    `Email: ${details.email}`,
+    details.specialRequest ? `Special request: ${details.specialRequest}` : "",
+    "Please confirm the schedule, seat availability, and final fare."
   ].filter(Boolean).join("\n");
 
-  window.location.href = `https://wa.me/254785195669?text=${encodeURIComponent(message)}`;
+  seatMessage.textContent = `Seat preferences: ${selectedSeats.join(", ")}.`;
+  whatsappConfirmButton.href = `https://wa.me/254785195669?text=${encodeURIComponent(message)}`;
+  whatsappConfirmButton.hidden = false;
 });
 
 document.querySelector("#existing-booking-form").addEventListener("submit", (event) => {

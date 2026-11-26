@@ -140,9 +140,11 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .dialog-close { position: absolute; top: 13px; right: 15px; width: 34px; height: 34px; border: 1px solid #dce1e3; border-radius: 50%; color: #596570; background: #fff; cursor: pointer; font-size: 23px; line-height: 1; }
 .dialog-eyebrow { margin: 0 0 7px; color: var(--red); font-size: 9px; font-weight: 700; letter-spacing: .15em; }
 .booking-dialog h2 { margin: 0 42px 12px 0; font-family: var(--serif); font-size: 30px; font-weight: 500; }
+.booking-dialog h3 { margin: 0 0 10px; font-family: var(--serif); font-size: 22px; font-weight: 500; }
 .dialog-summary { margin: 0 0 16px; color: #67737d; font-size: 12px; line-height: 1.65; }
+.flight-options { display: grid; gap: 10px; }
 .flight-option { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 18px; padding: 17px; border: 1px solid #dce2e4; border-radius: 4px; background: #fff; }
-.flight-option-details { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.flight-option-details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: center; gap: 16px; }
 .flight-option-details > div { display: grid; gap: 6px; }
 .flight-option-details strong { color: #263648; font-size: 13px; }
 .flight-option-details span { color: var(--muted); font-size: 10px; }
@@ -156,6 +158,14 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .booking-details-form .special-request-field, .booking-details-form .details-submit, .booking-details-form .details-note { grid-column: 1 / -1; }
 .booking-details-form .details-submit { justify-self: start; }
 .booking-details-form .details-note { margin-top: -3px; }
+.seat-grid { width: fit-content; display: grid; grid-template-columns: repeat(4, 48px); gap: 8px; margin: 18px auto; }
+.seat-button { min-height: 40px; border: 1px solid #cbd6d9; border-radius: 4px 4px 8px 8px; color: var(--teal); background: #f7fbfa; cursor: pointer; font-size: 10px; font-weight: 700; }
+.seat-button:hover, .seat-button.is-selected { border-color: var(--teal); color: #fff; background: var(--teal); }
+.seat-button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.seat-message { min-height: 18px; margin: 0; color: #67737d; font-size: 11px; text-align: center; }
+.whatsapp-confirm-button { min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; padding: 0 18px; color: #fff; background: #198754; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+.whatsapp-confirm-button[hidden] { display: none; }
+.whatsapp-confirm-button span { font-size: 14px; }
 
 .content-section { width: min(1120px, 88%); margin: 0 auto; padding: 75px 0 0; }
 .section-title { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 24px; }
@@ -342,6 +352,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .booking-details-form { grid-template-columns: 1fr; }
   .booking-details-form .special-request-field, .booking-details-form .details-submit, .booking-details-form .details-note { grid-column: auto; }
   .booking-details-form .details-submit { justify-self: stretch; }
+  .whatsapp-confirm-button { width: 100%; }
   .content-section { width: 90%; padding-top: 55px; }
   .section-title { align-items: flex-end; gap: 10px; margin-bottom: 18px; }
   .section-title h2 { font-size: 29px; }

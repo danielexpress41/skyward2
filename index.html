@@ -183,13 +183,24 @@
         <h2 id="dialog-title">Choose your flight</h2>
         <section id="search-results-step">
           <p class="dialog-summary" id="search-summary"></p>
-          <article class="flight-option">
-            <div class="flight-option-details">
-              <div><strong>Skyward Airlines</strong><span>Flight schedule confirmed by our team</span></div>
-              <div class="flight-option-fare"><strong id="estimated-fare"></strong><span id="fare-label">Indicative fare</span></div>
-            </div>
-            <button class="flight-book-button" id="choose-flight" type="button">BOOK NOW <span aria-hidden="true">→</span></button>
-          </article>
+          <div class="flight-options">
+            <article class="flight-option" data-option-index="0">
+              <div class="flight-option-details">
+                <div><strong>Skyward Airlines</strong><span>Schedule confirmed by our team</span></div>
+                <div><strong>Departure</strong><span>Time confirmed on WhatsApp</span></div>
+                <div class="flight-option-fare"><strong></strong><span></span></div>
+              </div>
+              <button class="flight-book-button" type="button">BOOK NOW <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="flight-option" data-option-index="1">
+              <div class="flight-option-details">
+                <div><strong>Skyward Airlines</strong><span>Alternative fare</span></div>
+                <div><strong>Departure</strong><span>Time confirmed on WhatsApp</span></div>
+                <div class="flight-option-fare"><strong></strong><span></span></div>
+              </div>
+              <button class="flight-book-button" type="button">BOOK NOW <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
           <p class="dialog-note" id="fare-note">Fares are indicative, based on the published Nairobi fares. Schedules, availability, and final prices are confirmed on WhatsApp.</p>
         </section>
         <section id="booking-details-step" hidden>
@@ -199,15 +210,26 @@
             <label>Full name<input name="fullName" type="text" autocomplete="name" required></label>
             <label>Phone or WhatsApp number<input name="phone" type="tel" autocomplete="tel" required></label>
             <label>Email address<input name="email" type="email" autocomplete="email" required></label>
-            <label>Lead passenger type
-              <select name="passengerType" required>
+            <label>ID number or passport number<input name="idNumber" type="text" autocomplete="off" required></label>
+            <label>Passenger type
+              <select name="passengerType">
                 <option>Adult</option><option>Child</option><option>Infant</option>
               </select>
             </label>
             <label class="special-request-field">Special request<textarea name="specialRequest" placeholder="Optional request" rows="3"></textarea></label>
             <button class="find-flights details-submit" type="submit">CONFIRM DETAILS <span aria-hidden="true">→</span></button>
-            <p class="dialog-note details-note">This sends a prefilled enquiry to WhatsApp; your booking is not confirmed until our team replies.</p>
+            <p class="dialog-note details-note">Your details are used to prepare the WhatsApp enquiry. This does not confirm a booking.</p>
           </form>
+        </section>
+        <section class="seat-step" id="seat-selection-step" hidden aria-labelledby="seat-selection-title">
+          <button class="back-to-results" id="back-to-details" type="button">← Back to passenger details</button>
+          <p class="dialog-eyebrow">STEP 2 OF 2</p>
+          <h3 id="seat-selection-title">Choose your seat</h3>
+          <p class="dialog-summary" id="seat-step-copy"></p>
+          <div class="seat-grid" id="seat-grid" role="group" aria-label="Seat preferences"></div>
+          <p class="seat-message" id="seat-message" role="status" aria-live="polite"></p>
+          <a class="whatsapp-confirm-button" id="send-booking-enquiry" href="#" hidden>CONFIRM BOOKING <span aria-hidden="true">→</span></a>
+          <p class="dialog-note">Seat preferences and availability are confirmed by our team on WhatsApp. Your booking is not confirmed until the team replies.</p>
         </section>
       </dialog>
 
