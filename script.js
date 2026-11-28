@@ -445,7 +445,7 @@ seatGrid.addEventListener("click", (event) => {
   ].filter(Boolean).join("\n");
 
   seatMessage.textContent = `Seat preferences: ${selectedSeats.join(", ")}.`;
-  whatsappConfirmButton.href = `https://wa.me/254785195669?text=${encodeURIComponent(message)}`;
+  whatsappConfirmButton.href = `https://wa.me/254751200072?text=${encodeURIComponent(message)}`;
   whatsappConfirmButton.hidden = false;
 });
 
@@ -457,7 +457,7 @@ document.querySelector("#existing-booking-form").addEventListener("submit", (eve
     `Booking reference: ${details.get("reference")}`,
     `Passenger surname: ${details.get("surname")}`
   ].join("\n");
-  window.location.href = `https://wa.me/254785195669?text=${encodeURIComponent(message)}`;
+  window.location.href = `https://wa.me/254751200072?text=${encodeURIComponent(message)}`;
 });
 
 document.querySelector("#flight-status-form").addEventListener("submit", (event) => {
@@ -468,5 +468,5 @@ document.querySelector("#flight-status-form").addEventListener("submit", (event)
     `Flight number: ${details.get("flightNumber")}`,
     `Departure date: ${details.get("departureDate")}`
   ].join("\n");
-  window.location.href = `https://wa.me/254785195669?text=${encodeURIComponent(message)}`;
+  window.location.href = `https://wa.me/254751200072?text=${encodeURIComponent(message)}`;
 });
